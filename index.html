@@ -30,8 +30,8 @@
 
             // Track Purchase Event with Google Ads Event Snippet
             function trackPurchase(transactionId, totalValue) {
-                gtag('event', 'purchase_conversion', {  
-                    'send_to': 'AW-16869228074/abcd1234xyz', // Replace with your actual Conversion Label
+                gtag('event', 'purchase', {  
+                    'send_to': 'AW-16869228074/REPLACE_WITH_YOUR_CONVERSION_LABEL', // Replace with your actual conversion label
                     'transaction_id': transactionId,
                     'value': totalValue,
                     'currency': 'USD'
@@ -40,11 +40,11 @@
                 console.log("Purchase tracked:", transactionId, totalValue);
             }
 
-            // Detect when a user clicks the checkout button
+            // Detect when a user clicks the final checkout button
             document.body.addEventListener("click", function (event) {
                 let target = event.target;
 
-                if (target.matches("#checkout-button")) {
+                if (target.matches(".checkout-button") || target.matches("[data-element='checkout-button']")) {
                     let transactionId = "ORDER-" + Math.floor(Math.random() * 1000000);
                     let totalValue = parseFloat(document.querySelector("#total-price")?.textContent || "0");
 
