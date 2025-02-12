@@ -28,57 +28,30 @@
         document.addEventListener("DOMContentLoaded", function () {
             console.log("Tracking script loaded");
 
-            // Track "Product Clicks" when users interact with an item
+            // Track Purchase Event with Google Ads Event Snippet
+            function trackPurchase(transactionId, totalValue) {
+                gtag('event', 'purchase_conversion', {  
+                    'send_to': 'AW-16869228074/abcd1234xyz', // Replace with your actual Conversion Label
+                    'transaction_id': transactionId,
+                    'value': totalValue,
+                    'currency': 'USD'
+                });
+
+                console.log("Purchase tracked:", transactionId, totalValue);
+            }
+
+            // Detect when a user clicks the checkout button
             document.body.addEventListener("click", function (event) {
                 let target = event.target;
 
-                // Track product clicks
-                if (target.matches(".product")) {
-                    let productName = target.getAttribute("data-name") || "Unknown Product";
-                    let price = parseFloat(target.getAttribute("data-price")) || 0;
-                    
-                    gtag('event', 'view_item', {
-                        'send_to': 'AW-16869228074',
-                        'event_category': 'Ecommerce',
-                        'event_label': productName,
-                        'value': price,
-                        'currency': 'USD'
-                    });
-
-                    console.log("Product viewed:", productName, price);
-                }
-
-                // Track Add to Cart clicks
-                if (target.matches(".add-to-cart")) {
-                    let productName = target.getAttribute("data-name") || "Unknown Product";
-                    let price = parseFloat(target.getAttribute("data-price")) || 0;
-
-                    gtag('event', 'add_to_cart', {
-                        'send_to': 'AW-16869228074',
-                        'event_category': 'Ecommerce',
-                        'event_label': productName,
-                        'value': price,
-                        'currency': 'USD'
-                    });
-
-                    console.log("Added to cart:", productName, price);
-                }
-
-                // Track Checkout clicks (purchase)
                 if (target.matches("#checkout-button")) {
-                    let totalValue = parseFloat(document.querySelector("#total-price")?.textContent || "0");
                     let transactionId = "ORDER-" + Math.floor(Math.random() * 1000000);
+                    let totalValue = parseFloat(document.querySelector("#total-price")?.textContent || "0");
 
-                    gtag('event', 'purchase', {
-                        'send_to': 'AW-16869228074',
-                        'transaction_id': transactionId,
-                        'value': totalValue,
-                        'currency': 'USD'
-                    });
-
-                    console.log("Purchase completed:", transactionId, totalValue);
+                    trackPurchase(transactionId, totalValue);
                 }
             });
+
         });
     </script>
 
