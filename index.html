@@ -26,62 +26,59 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            console.log("Tracking script loaded");
 
-            // Track Product Views
-            function trackProductView(productName, price) {
-                gtag('event', 'view_item', {
-                    'send_to': 'AW-16869228074',
-                    'event_category': 'Ecommerce',
-                    'event_label': productName,
-                    'value': price,
-                    'currency': 'USD'
-                });
-            }
+            // Track "Product Clicks" when users interact with an item
+            document.body.addEventListener("click", function (event) {
+                let target = event.target;
 
-            // Track Add to Cart
-            function trackAddToCart(productName, price) {
-                gtag('event', 'add_to_cart', {
-                    'send_to': 'AW-16869228074',
-                    'event_category': 'Ecommerce',
-                    'event_label': productName,
-                    'value': price,
-                    'currency': 'USD'
-                });
-            }
+                // Track product clicks
+                if (target.matches(".product")) {
+                    let productName = target.getAttribute("data-name") || "Unknown Product";
+                    let price = parseFloat(target.getAttribute("data-price")) || 0;
+                    
+                    gtag('event', 'view_item', {
+                        'send_to': 'AW-16869228074',
+                        'event_category': 'Ecommerce',
+                        'event_label': productName,
+                        'value': price,
+                        'currency': 'USD'
+                    });
 
-            // Track Purchase
-            function trackPurchase(transactionId, totalValue) {
-                gtag('event', 'purchase', {
-                    'send_to': 'AW-16869228074',
-                    'transaction_id': transactionId,
-                    'value': totalValue,
-                    'currency': 'USD'
-                });
-            }
+                    console.log("Product viewed:", productName, price);
+                }
 
-            // Example Event Listeners (Modify for Jotform App)
-            document.querySelectorAll('.product').forEach(item => {
-                item.addEventListener("click", function () {
-                    let productName = this.getAttribute("data-name");
-                    let price = parseFloat(this.getAttribute("data-price"));
-                    trackProductView(productName, price);
-                });
+                // Track Add to Cart clicks
+                if (target.matches(".add-to-cart")) {
+                    let productName = target.getAttribute("data-name") || "Unknown Product";
+                    let price = parseFloat(target.getAttribute("data-price")) || 0;
+
+                    gtag('event', 'add_to_cart', {
+                        'send_to': 'AW-16869228074',
+                        'event_category': 'Ecommerce',
+                        'event_label': productName,
+                        'value': price,
+                        'currency': 'USD'
+                    });
+
+                    console.log("Added to cart:", productName, price);
+                }
+
+                // Track Checkout clicks (purchase)
+                if (target.matches("#checkout-button")) {
+                    let totalValue = parseFloat(document.querySelector("#total-price")?.textContent || "0");
+                    let transactionId = "ORDER-" + Math.floor(Math.random() * 1000000);
+
+                    gtag('event', 'purchase', {
+                        'send_to': 'AW-16869228074',
+                        'transaction_id': transactionId,
+                        'value': totalValue,
+                        'currency': 'USD'
+                    });
+
+                    console.log("Purchase completed:", transactionId, totalValue);
+                }
             });
-
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener("click", function () {
-                    let productName = this.getAttribute("data-name");
-                    let price = parseFloat(this.getAttribute("data-price"));
-                    trackAddToCart(productName, price);
-                });
-            });
-
-            document.querySelector("#checkout-button")?.addEventListener("click", function () {
-                let transactionId = "ORDER-" + Math.floor(Math.random() * 1000000);
-                let totalValue = parseFloat(document.querySelector("#total-price")?.textContent || "0");
-                trackPurchase(transactionId, totalValue);
-            });
-
         });
     </script>
 
